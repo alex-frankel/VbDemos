@@ -1,98 +1,70 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "userAssignedIdentity": {
+        "identity": {
             "type": "string",
             "defaultValue": "/subscriptions/e4272367-5645-4c4e-9c67-3b74b59a6982/resourceGroups/Contoso/providers/Microsoft.ManagedIdentity/userAssignedIdentities/alex-test-identity"
-        },
-        "newGuid": {
-            "type": "string",
-            "defaultValue": "[newGuid()]"
-        },
-        "vaultName": {
-            "type": "string",
-            "defaultValue": "alex-test-kv"
-        },
-        "certificateName": {
-            "type": "string",
-            "defaultValue": "ignite2019"
-        },
-        "subjectName": {
-            "type": "string",
-            "defaultValue": "CN=contoso.com"
         }
-    },
-    "variables": {
-        "scriptName": "createCert"
     },
     "resources": [
         {
             "type": "Microsoft.Resources/deploymentScripts",
+            "name": "scriptInTemplate1",
             "apiVersion": "2019-10-01-preview",
-            "name": "[variables('scriptName')]",
-            "location": "[resourceGroup().location]",
+            "location": "[resourceGroup().location]", // must be a canary region for now (eastus2euap)
+            "kind": "AzurePowerShell",
             "identity": {
-                "type": "UserAssigned",
+                "type": "userAssigned",
                 "userAssignedIdentities": {
-                    "[parameters('userAssignedIdentity')]": {
-                    }
+                    "[parameters('identity')]": {}
                 }
             },
-            "kind": "AzurePowerShell",
             "properties": {
-                "forceUpdateTag": "[parameters('newGuid')]",
                 "azPowerShellVersion": "2.7",
+                "scriptContent": "
+                    param([string] $textToEcho)
+                    Write-Output $textToEcho
+                    $DeploymentScriptOutputs['text'] = $textToEcho",
+                "Arguments": "-textToEcho 'test'",
                 "timeout": "PT30M",
                 "retentionInterval": "P1D",
                 "cleanupPreference": "OnSuccess",
-                "arguments": "[format(' -vaultName {0} -certificateName {1} -subjectName {2}', parameters('vaultName'), parameters('certificateName'), parameters('subjectName'))]", // can pass an arguement string, double quotes must be escaped
-                "environmentVariables": [
-                    {
-                        "name": "someSecret",
-                        "secureValue": "if this is really a secret, don't put it here... in plain text..."
-                    }
-                ],
-                "scriptContent": " 
-                    param(
-                    [string] [Parameter(Mandatory=$false)] $vaultName,
-                    [string] [Parameter(Mandatory=$false)] $certificateName,
-                    [string] [Parameter(Mandatory=$false)] $subjectName
-                    )
-
-                    $ErrorActionPreference = 'Stop'
-
-                    $policy = New-AzKeyVaultCertificatePolicy -SubjectName $subjectName -IssuerName Self -ValidityInMonths 12 -Verbose
-
-                    # private key is added as a secret that can be retrieved in the ARM template
-                    Add-AzKeyVaultCertificate -VaultName $vaultName -Name $certificateName -CertificatePolicy $policy -Verbose
-
-                    $cert = Get-AzKeyVaultCertificate -VaultName $vaultName -Name $certificateName
-
-                    # it take a few seconds for KeyVault to finish
-                    while($cert.Thumbprint -eq $null){
-                        Write-Output 'Sleeping...'
-                        Start-Sleep 5
-                        $cert = Get-AzKeyVaultCertificate -VaultName $vaultName -Name $certificateName
-                    }
-
-                    $DeploymentScriptOutputs = New-Object -TypeName hashtable
-                    $DeploymentScriptOutputs['certThumbprint'] = $cert.Thumbprint
-                    $cert | Out-String
-
-                    # Is this thing idempotent?
-                "
+                "forceUpdateTag": "1"
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deploymentScripts",
+            "name": "scriptInTemplate2",
+            "apiVersion": "2019-10-01-preview",
+            "location": "[resourceGroup().location]",
+            "kind": "AzurePowerShell",
+            "dependsOn": [
+                "scriptInTemplate1"
+            ],
+            "identity": {
+                "type": "userAssigned",
+                "userAssignedIdentities": {
+                    "[parameters('identity')]": {}
+                }
+            },
+            "properties": {
+                "azPowerShellVersion": "2.7",
+                "scriptContent": "
+                    param([string] $textToEcho)
+                    Write-Output $textToEcho
+                    $DeploymentScriptOutputs['text'] = $textToEcho
+                ",
+                "arguments": "[concat('-textToEcho ', reference('scriptInTemplate1').outputs.text, '-morestuff')]", // -textToEcho test-morestuff
+                "timeout": "PT30M",
+                "retentionInterval": "P1D"
             }
         }
     ],
     "outputs": {
-        "Thumbprint": {
-            "type": "string",
-            "value": "[reference(variables('scriptName')).outputs.certThumbprint]"
-        },
-        "scriptOutput": {
-            "type":"object",
-            "value":"[reference(variables('scriptName')).status]"
+        "result": {
+            "value": "[reference('scriptInTemplate2').outputs.text]",
+            "type": "string"
         }
     }
 }
