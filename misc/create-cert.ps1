@@ -15,6 +15,7 @@ if ($existingCert -and $existingCert.Certificate.Subject -eq $subjectName) {
 
     # Write-Host \"Certificate $certificateName in vault $vaultName is already present, updating issuance policy\"
 
+    $DeploymentScriptOutputs['gotHere'] = "got here"
     $DeploymentScriptOutputs['certThumbprint'] = $existingCert.Thumbprint
     $existingCert | Out-String
 }
