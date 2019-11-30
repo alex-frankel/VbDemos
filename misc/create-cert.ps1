@@ -20,7 +20,6 @@ if ($existingCert -and $existingCert.Certificate.Subject -eq $subjectName) {
     $existingCert | Out-String
 }
 
-<#
 else {
 
     $policy = New-AzKeyVaultCertificatePolicy -SubjectName $subjectName -IssuerName Self -ValidityInMonths 12 -Verbose
@@ -53,5 +52,3 @@ else {
     $DeploymentScriptOutputs['certThumbprint'] = $newCert.Thumbprint
     $newCert | Out-String
 }
-#>
-# $DeploymentScriptOutputs['certThumbprint'] = "test"
