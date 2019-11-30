@@ -4,8 +4,9 @@ param(
     [string] [Parameter(Mandatory=$false)] $subjectName
 )
 
-Get-AzContext
+# Get-AzContext
 
+<#
 $ErrorActionPreference = 'Stop'
 $DeploymentScriptOutputs = @{}
 
@@ -50,3 +51,6 @@ else {
     $DeploymentScriptOutputs['certThumbprint'] = $newCert.Thumbprint
     $newCert | Out-String
 }
+#>
+
+$DeploymentScriptOutputs['certThubmprint'] = "test" 
