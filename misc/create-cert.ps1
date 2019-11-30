@@ -6,7 +6,6 @@ param(
 
 # Get-AzContext
 
-<#
 $ErrorActionPreference = 'Stop'
 $DeploymentScriptOutputs = @{}
 
@@ -14,11 +13,13 @@ $existingCert = Get-AzKeyVaultCertificate -VaultName $vaultName -Name $certifica
 
 if ($existingCert -and $existingCert.Certificate.Subject -eq $subjectName) {
 
-    Write-Host \"Certificate $certificateName in vault $vaultName is already present, updating issuance policy\"
+    # Write-Host \"Certificate $certificateName in vault $vaultName is already present, updating issuance policy\"
 
     $DeploymentScriptOutputs['certThumbprint'] = $existingCert.Thumbprint
     $existingCert | Out-String
 }
+
+<#
 else {
 
     $policy = New-AzKeyVaultCertificatePolicy -SubjectName $subjectName -IssuerName Self -ValidityInMonths 12 -Verbose
@@ -52,4 +53,4 @@ else {
     $newCert | Out-String
 }
 #>
-$DeploymentScriptOutputs['certThumbprint'] = "test"
+# $DeploymentScriptOutputs['certThumbprint'] = "test"
