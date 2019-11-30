@@ -52,5 +52,4 @@ else {
     $newCert | Out-String
 }
 #>
-
-$DeploymentScriptOutputs['certThubmprint'] = "test" 
+$DeploymentScriptOutputs['certThumbprint'] = "test"
