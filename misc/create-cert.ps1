@@ -39,12 +39,12 @@ else {
 
         if ($operation.Status -eq 'failed')
         {
-          throw \"Creating certificate $certificateName in vault $vaultName failed with error $($operation.ErrorMessage)\"
+          throw 'Creating certificate failed' #$certificateName in vault $vaultName failed with error $($operation.ErrorMessage)\"
         }
 
         if ($tries -gt 120)
         {
-          throw \"Timed out waiting for creation of certificate $certificateName in vault $vaultName\"
+          throw 'Timed out waiting for creation of certificate' # $certificateName in vault $vaultName\"
         }
 
     } while ($operation.Status -ne 'completed')
