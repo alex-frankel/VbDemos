@@ -39,10 +39,6 @@
         "result": {
             "value": "[reference('createCert').outputs.certThumbprint]",
             "type": "string"
-        },
-        "test": {
-            "type": "string",
-            "value": "[reference('createCert').outputs.gotHere]"
         }
     }
 }
