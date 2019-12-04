@@ -5,7 +5,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$DeploymentScriptOutputs = @{}
+$DeploymentScriptOutputs = @{} 
 
 $existingCert = Get-AzKeyVaultCertificate -VaultName $vaultName -Name $certificateName
 

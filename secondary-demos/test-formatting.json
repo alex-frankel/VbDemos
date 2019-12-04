@@ -1,5 +1,5 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "identity": {
@@ -14,7 +14,7 @@
     "resources": [
         {
             "type": "Microsoft.Resources/deploymentScripts",
-            "name": "scriptInTemplate1",
+            "name": "testFormatting",
             "apiVersion": "2019-10-01-preview",
             "location": "[resourceGroup().location]",
             "kind": "AzurePowerShell",
@@ -27,10 +27,12 @@
             "properties": {
                 "azPowerShellVersion": "2.7",
                 "scriptContent": "
-                    param([string] $textToEcho)
-                    Write-Output $textToEcho
-                    $DeploymentScriptOutputs['text'] = $textToEcho",
-                "Arguments": "-textToEcho 'test-alex-script'",
+                    $johnDoe = 'Al Man'
+
+                    \"Hello $johnDoe\"
+
+                    'Hello {0}' -f $johnDoe
+                ",
                 "timeout": "PT30M",
                 "retentionInterval": "P1D",
                 "cleanupPreference": "OnSuccess",
@@ -40,8 +42,8 @@
     ],
     "outputs": {
         "result": {
-            "value": "[reference('scriptInTemplate1').outputs.text]",
-            "type": "string"
+            "type": "string",
+            "value": "[reference('testFormatting').outputs.certThumbprint]"
         }
     }
 }
