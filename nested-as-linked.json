@@ -1,0 +1,68 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "aParameter": {
+            "type": "string",
+            "defaultValue": "defaultValue"
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "inlineTemplate",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "expressionEvaluationOptions": {
+                    "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                    "aParameter": {
+                        "value": "[concat('value', 1)]"
+                    },
+                    "bParameter": {
+                        "value": 3
+                    }
+                },
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "aParameter": {
+                            "type": "string",
+                            "defaultValue": "defaultValue"
+                        },
+                        "bParameter": {
+                            "type": "int",
+                            "defaultValue": -1
+                        }
+                    },
+                    "variables": {
+                    },
+                    "resources": [
+                        {
+                            "type": "ResourceProviderTestHost/TestResourceType",
+                            "location": "DevFabric",
+                            "apiVersion": "2014-04-01-preview",
+                            "name": "[concat('0', '1')]",
+                            "properties": {
+                                "propertyOne": "[parameters('aParameter')]",
+                                "copy": [
+                                    {
+                                        "name": "propertyGroup",
+                                        "count": "[parameters('bParameter')]",
+                                        "input": "[concat('a', copyIndex('propertyGroup'))]"
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "outputs": {}
+                }
+            }
+        }
+    ]
+}
