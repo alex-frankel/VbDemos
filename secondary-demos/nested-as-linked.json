@@ -5,6 +5,10 @@
         "aParameter": {
             "type": "string",
             "defaultValue": "defaultValue"
+        },
+        "bParameter": {
+            "type": "int",
+            "defaultValue": 1
         }
     },
     "variables": {
@@ -15,16 +19,18 @@
             "name": "inlineTemplate",
             "type": "Microsoft.Resources/deployments",
             "properties": {
+                /*
                 "expressionEvaluationOptions": {
-                    "scope": "inner"
+                    "scope": "inner" // treat this as a linked template
                 },
+                */
                 "mode": "Incremental",
                 "parameters": {
                     "aParameter": {
                         "value": "[concat('value', 1)]"
                     },
                     "bParameter": {
-                        "value": 3
+                        "value": 5
                     }
                 },
                 "template": {
