@@ -14,24 +14,26 @@
     "resources": [
         {
             "type": "Microsoft.Resources/deploymentScripts",
-            "name": "createCert",
+            "name": "createCert", // can use newGuid() to save each execution separately
             "apiVersion": "2019-10-01-preview",
             "location": "[resourceGroup().location]",
-            "kind": "AzurePowerShell",
+            "kind": "AzurePowerShell", // option for "AzureCLI"
             "identity": {
                 "type": "userAssigned",
                 "userAssignedIdentities": {
-                    "[parameters('identity')]": {}
+                    "[parameters('identity')]": {} // resourceId of the managed identity
                 }
             },
             "properties": {
                 "azPowerShellVersion": "2.7",
-                "primaryScriptUri": "https://raw.githubusercontent.com/alex-frankel/VbDemos/master/misc/create-cert.ps1",
-                "Arguments": "-vaultName alex-test-kv -certificateName test-cert -subjectName 'CN=contoso.com'",
+                "primaryScriptUri": 
+                    "https://raw.githubusercontent.com/alex-frankel/VbDemos/master/misc/create-cert.ps1",
+                "Arguments": 
+                    "-vaultName alex-test-kv -certificateName test-cert -subjectName 'CN=contoso.com'",
                 "timeout": "PT30M",
-                "retentionInterval": "P1D",
-                "cleanupPreference": "OnSuccess",
-                "forceUpdateTag": "[parameters('timestamp')]"
+                "retentionInterval": "P1D", // time until deploymentScript will delete itself
+                "cleanupPreference": "OnSuccess", // option for "Always"
+                "forceUpdateTag": "[parameters('timestamp')]" // utcNow()
             }
         }
     ],

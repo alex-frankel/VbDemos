@@ -28,7 +28,7 @@
                         {
                             "type": "Microsoft.Authorization/roleAssignments",
                             "apiVersion": "2017-09-01",
-                            "name": "[guid('roleAssign002')]",
+                            "name": "[guid(resourceGroup().name)]",
                             "properties": {
                                 "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]", // reader
                                 "principalId": "5f1ed457-d451-4f9b-9e0d-eeca89bd066c" // satyavel

@@ -2,16 +2,10 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "aParameter": {
-            "type": "string",
-            "defaultValue": "defaultValue"
-        },
-        "bParameter": {
+        "count": {
             "type": "int",
-            "defaultValue": 1
+            "defaultValue": 2
         }
-    },
-    "variables": {
     },
     "resources": [
         {
@@ -19,17 +13,12 @@
             "name": "inlineTemplate",
             "type": "Microsoft.Resources/deployments",
             "properties": {
-                /*
                 "expressionEvaluationOptions": {
                     "scope": "inner" // treat this as a linked template
                 },
-                */
                 "mode": "Incremental",
                 "parameters": {
-                    "aParameter": {
-                        "value": "[concat('value', 1)]"
-                    },
-                    "bParameter": {
+                    "count": {
                         "value": 5
                     }
                 },
@@ -37,32 +26,26 @@
                     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
                     "contentVersion": "1.0.0.0",
                     "parameters": {
-                        "aParameter": {
-                            "type": "string",
-                            "defaultValue": "defaultValue"
-                        },
-                        "bParameter": {
-                            "type": "int",
-                            "defaultValue": -1
+                        "count": {
+                            "type": "int"
                         }
                     },
                     "variables": {
                     },
                     "resources": [
                         {
-                            "type": "ResourceProviderTestHost/TestResourceType",
-                            "location": "DevFabric",
-                            "apiVersion": "2014-04-01-preview",
-                            "name": "[concat('0', '1')]",
-                            "properties": {
-                                "propertyOne": "[parameters('aParameter')]",
-                                "copy": [
-                                    {
-                                        "name": "propertyGroup",
-                                        "count": "[parameters('bParameter')]",
-                                        "input": "[concat('a', copyIndex('propertyGroup'))]"
-                                    }
-                                ]
+                            "apiVersion": "2016-01-01",
+                            "type": "Microsoft.Storage/storageAccounts",
+                            "name": "[concat(copyIndex(),'storage', uniqueString(resourceGroup().id))]",
+                            "location": "[resourceGroup().location]",
+                            "sku": {
+                                "name": "Standard_LRS"
+                            },
+                            "kind": "Storage",
+                            "properties": {},
+                            "copy": {
+                                "name": "storagecopy",
+                                "count": "[parameters('count')]"
                             }
                         }
                     ],
