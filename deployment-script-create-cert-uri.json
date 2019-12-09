@@ -32,14 +32,14 @@
                     "-vaultName alex-test-kv -certificateName test-cert -subjectName 'CN=contoso.com'",
                 "timeout": "PT30M",
                 "retentionInterval": "P1D", // time until deploymentScript will delete itself
-                "cleanupPreference": "OnSuccess", // option for "Always"
+                "cleanupPreference": "OnSuccess", // option for "Always", "OnExpiration"
                 "forceUpdateTag": "[parameters('timestamp')]" // utcNow()
             }
         }
     ],
     "outputs": {
         "result": {
-            "value": "[reference('createCert').outputs.certThumbprint]",
+            "value": "[reference('createCert').outputs.certThumbprint]", // declared outputs can be used later
             "type": "string"
         }
     }
