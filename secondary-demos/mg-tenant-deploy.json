@@ -1,76 +1,24 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {},
-    "variables": {},
+    "parameters": {
+    },
+    "variables": {
+    },
     "resources": [
         {
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2017-09-01",
             "name": "[guid('roleAssign001')]",
             "properties": {
-                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]", // contributor
-                "principalId": "caeebed6-cfa8-45ff-9d8a-03dba4ef9a7d" // alfran
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2019-05-01",
-            "subscriptionId": "e93d3ee6-fac1-412f-92d6-bfb379e81af2", // Contoso IT – SH360 – Prod
-            "name": "parentScopeDeployment",
-            "location": "eastus",
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "resources": [
-                        {
-                            "type": "Microsoft.Authorization/roleAssignments",
-                            "apiVersion": "2017-09-01",
-                            "name": "[guid(resourceGroup().name)]",
-                            "properties": {
-                                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]", // reader
-                                "principalId": "5f1ed457-d451-4f9b-9e0d-eeca89bd066c" // satyavel
-                            }
-                        },
-                        {
-                            "type": "Microsoft.Resources/deployments",
-                            "apiVersion": "2019-05-01",
-                            "name": "childScopeDeployment",
-                            "resourceGroup": "test-005",
-                            "properties": {
-                                "mode": "Incremental",
-                                /*
-                                "template": {
-                                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                                    "contentVersion": "1.0.0.0",
-                                    "resources": [
-                                        {
-                                            "name": "[concat('storage', uniqueString(resourceGroup().id))]",
-                                            "type": "Microsoft.Storage/storageAccounts",
-                                            "apiVersion": "2016-01-01",
-                                            "sku": {
-                                                "name": "Standard_LRS"
-                                            },
-                                            "kind": "Storage",
-                                            "location": "eastus"
-                                        }
-                                    ]
-                                }
-                                */
-                                "templateLink": {
-                                    //"uri": ""
-                                    "templateSpec": "[resourceId()]",
-                                    "relativePath": "./path-to-file/template.json"
-                                }
-                            }
-                        }
-                    ]
-                }
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                "principalId": "caeebed6-cfa8-45ff-9d8a-03dba4ef9a7d"
             }
         }
     ],
-    "outputs": {},
-    "functions": []
+    "outputs": {
+
+    },
+    "functions": [
+    ]
 }

@@ -28,7 +28,7 @@
                 "azPowerShellVersion": "2.7",
                 "primaryScriptUri": 
                     "https://raw.githubusercontent.com/alex-frankel/VbDemos/master/misc/create-cert.ps1",
-                "Arguments": 
+                "arguments": 
                     "-vaultName alex-test-kv -certificateName test-cert -subjectName 'CN=contoso.com'",
                 "timeout": "PT30M",
                 "retentionInterval": "P1D", // time until deploymentScript will delete itself
@@ -39,8 +39,8 @@
     ],
     "outputs": {
         "result": {
-            "value": "[reference('createCert').outputs.certThumbprint]", // declared outputs can be used later
-            "type": "string"
+            "type": "string",
+            "value": "[reference('createCert').outputs.certThumbprint]" // declared outputs can be used later            
         }
     }
 }
