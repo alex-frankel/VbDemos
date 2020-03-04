@@ -1,0 +1,18 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {},
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Management/managementGroups",
+            "apiVersion": "2019-11-01", // latest apiVersion with the fix
+            "name": "[guid('alexBugBash')]",
+            "properties": {
+
+            }
+        }
+    ],
+    "outputs": {},
+    "functions": []
+}

@@ -2,49 +2,39 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {},
-    "variables": {},
+    "variables": {
+        "servicePrincipalId": "spn1"
+    },
     "resources": [
-        /*
         {
-            "name": "cosmosDbAccount1",
-            "type": "Microsoft.DocumentDB/databaseAccounts",
-            "apiVersion": "2015-04-08",
-            "location": "[resourceGroup().location]", // never use eastus
-            "tags": {},
-            "kind": "GlobalDocumentDB",
-            "properties": {
-                "consistencyPolicy": {
-                    "defaultConsistencyLevel": "Eventual",
-                    "maxStalenessPrefix": 1,
-                    "maxIntervalInSeconds": 5
-                },
-                "locations": [
-                    {
-                        "locationName": "location1",
-                        "failoverPriority": 0
-                    }
-                ],
-                "databaseAccountOfferType": "Standard",
-                "ipRangeFilter": "ipRangeFilter",
-                "enableAutomaticFailover": true,
-                "capabilities": [
-                    {
-                        "name": "EnableTable"
-                    }
-                ]
-            }
-        }
-        */
+            "type": "Microsoft.Graph/applications",
+            ...,
+            "name": "appIdentifier"
+        },
         {
-            "type": "Microsoft.ContainerInstance/containerGroups",
+            "type": "Microsoft.Graph/servicePrincipals",
             "apiVersion": "2018-10-01",
-            "location": "East US",
-            "name": "alex-aci-01",
+            "name": "[variables('servicePrincipalId')]",
             "properties": {
-                "osType": "Linux"
-            }
+                "appId": "[reference('appIdentifier').appId]" 
+            },
+            "dependsOn": ["appIdentifier"]
+        },
+        {
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2017-09-01",
+            "name": "[guid('alex')]",
+            "properties": {
+                "principalId": "[variables('servicePrincipalId')]"
+            },
+            "dependsOn": ["[variables('servicePrincipalId')]"]
         }
     ],
-    "outputs": {},
+    "outputs": {
+        "anything": {
+            "type": "string",
+            "value": "[reference(variables('servicePrincipalId')).id]"
+        }
+    },
     "functions": []
 }

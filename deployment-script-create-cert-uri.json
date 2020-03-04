@@ -11,10 +11,13 @@
             "defaultValue": "[utcNow()]"
         }
     },
+    "variables": {
+        "scriptName": "[concat('createCert', parameters('timestamp'))]"
+    },
     "resources": [
         {
             "type": "Microsoft.Resources/deploymentScripts",
-            "name": "createCert", // can use newGuid() to save each execution separately
+            "name": "[variables('scriptName')]", // can use newGuid() to save each execution separately
             "apiVersion": "2019-10-01-preview",
             "location": "[resourceGroup().location]",
             "kind": "AzurePowerShell", // option for "AzureCLI"
@@ -33,14 +36,14 @@
                 "timeout": "PT30M",
                 "retentionInterval": "P1D", // time until deploymentScript will delete itself
                 "cleanupPreference": "OnSuccess", // option for "Always", "OnExpiration"
-                "forceUpdateTag": "[parameters('timestamp')]" // utcNow()
+                // "forceUpdateTag": "[parameters('timestamp')]" // utcNow()
             }
         }
     ],
     "outputs": {
         "result": {
             "type": "string",
-            "value": "[reference('createCert').outputs.certThumbprint]" // declared outputs can be used later            
+            "value": "[reference(variables('scriptName')).outputs.certThumbprint]" // declared outputs can be used later            
         }
     }
 }
